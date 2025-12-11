@@ -1,5 +1,6 @@
 package br.com.sistemalog;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ public class LogEntry {
         this.errorMessage = errorMessage;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     public LocalDateTime getTimestamp() { return timestamp; }
     public String getOperation() { return operation; }
     public String getUserName() { return userName; }
@@ -75,11 +77,11 @@ public class LogEntry {
         String authUser = perfil.replace("\"", "\"\"");
 
         return String.format("%s;%s;\"%s\";\"%s\";%s;\"%s\";\"%s\"",
+            operation.replace("\"", "\"\""),
+            user,
             timestamp.format(DATE_FORMAT),
             timestamp.format(TIME_FORMAT),
-            authUser,
-            user,
-            operation.replace("\"", "\"\""),
+            authUser,  
             status,
             error
         );
