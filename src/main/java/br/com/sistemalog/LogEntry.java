@@ -5,32 +5,32 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@JsonPropertyOrder({ "timestamp", "operation", "userName", "authenticatedUser", "isSuccess", "errorMessage", "customLogMessage" })
+@JsonPropertyOrder({ "operation", "userName", "timestamp", "perfil", "isSuccess", "errorMessage", "customLogMessage" })
 public class LogEntry {
     private final LocalDateTime timestamp;
     private final String operation;
     private final String userName;
-    private final String authenticatedUser;
+    private final String perfil;
     private final boolean isSuccess;
     private final String errorMessage;
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    public LogEntry(String operation, String userName, String authenticatedUser) {
+    public LogEntry(String operation, String userName, String perfil) {
         this.timestamp = LocalDateTime.now();
         this.operation = operation;
         this.userName = userName;
-        this.authenticatedUser = authenticatedUser;
+        this.perfil = perfil;
         this.isSuccess = true;
         this.errorMessage = null;
     }
 
-    public LogEntry(String operation, String userName, String authenticatedUser, String errorMessage) {
+    public LogEntry(String operation, String userName, String perfil, String errorMessage) {
         this.timestamp = LocalDateTime.now();
         this.operation = operation;
         this.userName = userName;
-        this.authenticatedUser = authenticatedUser;
+        this.perfil = perfil;
         this.isSuccess = false;
         this.errorMessage = errorMessage;
     }
@@ -38,9 +38,10 @@ public class LogEntry {
     public LocalDateTime getTimestamp() { return timestamp; }
     public String getOperation() { return operation; }
     public String getUserName() { return userName; }
-    public String getAuthenticatedUser() { return authenticatedUser; }
+    public String getPerfil() { return perfil; }
     public boolean isSuccess() { return isSuccess; }
     public String getErrorMessage() { return errorMessage; }
+    @JsonIgnore
     public String getCustomLogMessage() { return generateCustomMessage(); }
 
     @JsonIgnore 
@@ -48,7 +49,7 @@ public class LogEntry {
         String context = String.format("(%s, %s, %s)", 
             timestamp.format(DATE_FORMAT), 
             timestamp.format(TIME_FORMAT), 
-            authenticatedUser
+            perfil
         );
 
         if (isSuccess) {
@@ -71,7 +72,7 @@ public class LogEntry {
         String status = isSuccess ? "SUCESSO" : "FALHA";
         String error = errorMessage != null ? errorMessage.replace("\"", "\"\"") : "";
         String user = userName.replace("\"", "\"\"");
-        String authUser = authenticatedUser.replace("\"", "\"\"");
+        String authUser = perfil.replace("\"", "\"\"");
 
         return String.format("%s;%s;\"%s\";\"%s\";%s;\"%s\";\"%s\"",
             timestamp.format(DATE_FORMAT),
@@ -85,6 +86,6 @@ public class LogEntry {
     }
 
     public static String getCsvHeader() {
-        return "Data;Hora;Usuario_Executou;Usuario_Alvo;Operacao;Status;Mensagem_Erro";
+        return "Operacao;Usuario;Data;Hora;Perfil;Status;Msg_Erro";
     }
 }
