@@ -20,18 +20,18 @@ public class LogEntry {
 
     public LogEntry(String operation, String userName, String perfil) {
         this.timestamp = LocalDateTime.now();
-        this.operation = operation;
-        this.userName = userName;
-        this.perfil = perfil;
+        this.operation = checkNullOrEmpty(operation);
+        this.userName = checkNullOrEmpty(userName);
+        this.perfil = checkNullOrEmpty(perfil);
         this.isSuccess = true;
         this.errorMessage = null;
     }
 
     public LogEntry(String operation, String userName, String perfil, String errorMessage) {
         this.timestamp = LocalDateTime.now();
-        this.operation = operation;
-        this.userName = userName;
-        this.perfil = perfil;
+        this.operation = checkNullOrEmpty(operation);
+        this.userName = checkNullOrEmpty(userName);
+        this.perfil = checkNullOrEmpty(perfil);
         this.isSuccess = false;
         this.errorMessage = errorMessage;
     }
@@ -90,4 +90,11 @@ public class LogEntry {
     public static String getCsvHeader() {
         return "Operacao;Usuario;Data;Hora;Perfil;Status;Msg_Erro";
     }
+    
+    private static String checkNullOrEmpty(String value) {
+    if (value == null || value.trim().isEmpty()) {
+        return "-";
+    }
+    return value;
+}
 }
